@@ -18,5 +18,7 @@ mongoose.connect(connectionString, configOptions)
     }
 )
 
-//module.exports here
+module.exports={
+    User:require('./User'),
+}
 
