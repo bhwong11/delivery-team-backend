@@ -28,12 +28,31 @@ const show = async(req,res)=>{
 
 const update = async(req,res)=>{
     try{
+        
+        const unupdatedUser = await User.findById(req.userId);
+
+        let newLocation = false;
+        let newCompany = false;
+
+        if(req.body.location!==unupdatedUser.location){
+            newLocation = true
+        }
+        if(req.body.city!==unupdatedUser.city){
+            newCompany = true
+        }
+
+        if(newLocation){
+            await MessageBoard.updateMany({users:{$in:[unupdatedUser._id]}})
+        }
+        
+
         const updateBody = {
             email:req.body.email,
             username:req.body.username,
             location:req.body.location,
             company:req.body.company,
         }
+
         const updatedUser = await User.findByIdAndUpdate(req.userId,updateBody,{new:true}).populate('messageBoards').exec((err, messageBoards) => {
             console.log("Populated User " + messageBoards);
           })
@@ -43,7 +62,9 @@ const update = async(req,res)=>{
                 message:'could not find user with that id',
             })
         }
-        //IF COMPANY OR CITY IS UPDATED UPDATRE CHAT 
+        //IF COMPANY OR CITY IS UPDATED UPDATE MESSAGE BOARD
+        
+
         return res.status(200).json({
             status:200,
             message:'success',
@@ -51,7 +72,7 @@ const update = async(req,res)=>{
         })
     }catch(err){
         console.log(err)
-        res.status(500).json({
+        return res.status(500).json({
             status:500,
             message:'internal server error'
         })

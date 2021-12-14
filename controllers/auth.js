@@ -35,6 +35,34 @@ const register = async (req,res)=>{
         //CREATE WAY FOR USER TO AUTO BE ADDED TO COMPANY AND CITY MESSAGE BOARD
         //if the message board for city doesn't exist make one
         //auto post message
+
+        //join company message board for when user joins in, create one if it doesn't exist
+        let companyMessageBoard = await MessageBoard.findOne({company:req.body.company})
+        if(!companyMessageBoard){
+            companyMessageBoard = await MessageBoard.create({
+                name:req.body.company,
+                category:'company',
+                users:[createdUser._id]
+            })
+        }else{
+            await MessageBoard.updateOne({_id:companyMessageBoard._id},{$push: {users: createdUser._id}},done)
+        }
+        await User.updateOne({_id:createdUser._id},{$push: {messageBoards: companyMessageBoard._id}},done)
+
+        //join city message board for when user joins in, create one if it doesn't exist
+        let cityMessageBoard = await MessageBoard.findOne({city:req.body.city})
+        if(!cityMessageBoard){
+            cityMessageBoard = await MessageBoard.create({
+                name:req.body.city,
+                category:'city',
+                users:[createdUser._id]
+            })
+        }else{
+            await MessageBoard.updateOne({_id:cityMessageBoard._id},{$push: {users: createdUser._id}},done)
+        }
+        await User.updateOne({_id:createdUser._id},{$push: {messageBoards: cityMessageBoard._id}},done)
+        
+
         return res.status(200).json({
             status:200,
             message:'success',
