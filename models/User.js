@@ -17,6 +17,14 @@ const UserSchema = new mongoose.Schema({
         required:true,
         select:false,
     },
+    company:{
+        type:String,
+        default:'Other',
+    },
+    location:{
+        type:String,
+        default:'N/A',
+    },
     messageBoards:{
         type:[{
             type: mongoose.Schema.Types.ObjectId,
