@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema({
         type:String,
         default:'N/A',
     },
+    personalPost:{
+        type:[{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "PersonalPost",
+        }]
+    },
     messageBoards:{
         type:[{
             type: mongoose.Schema.Types.ObjectId,
