@@ -2,7 +2,7 @@ const {User,MessageBoard,Post} = require('../models');
 
 const show = async(req,res)=>{
     try{
-        const foundUser = User.findById(req.userId).populate('messageBoards').exec((err, messageBoards) => {
+        const foundUser = await User.findById(req.userId).populate('messageBoards').exec((err, messageBoards) => {
             console.log("Populated User " + messageBoards);
           })
         if(foundUser){
@@ -34,7 +34,7 @@ const update = async(req,res)=>{
             location:req.body.location,
             company:req.body.company,
         }
-        const updatedUser = User.findByIdAndUpdate(req.userId,updateBody,{new:true}).populate('messageBoards').exec((err, messageBoards) => {
+        const updatedUser = await User.findByIdAndUpdate(req.userId,updateBody,{new:true}).populate('messageBoards').exec((err, messageBoards) => {
             console.log("Populated User " + messageBoards);
           })
         if(!updatedUser){
@@ -43,6 +43,7 @@ const update = async(req,res)=>{
                 message:'could not find user with that id',
             })
         }
+        //IF COMPANY OR CITY IS UPDATED UPDATRE CHAT 
         return res.status(200).json({
             status:200,
             message:'success',

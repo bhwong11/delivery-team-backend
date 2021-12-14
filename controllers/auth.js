@@ -21,6 +21,7 @@ const register = async (req,res)=>{
             })
         }
 
+
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(req.body.password,salt)
         const createdUser = await User.create({
@@ -30,6 +31,10 @@ const register = async (req,res)=>{
         const token = jwt.sign({_id:createdUser._id},process.env.SECRET,{
             expiresIn:'1d',
         })
+
+        //CREATE WAY FOR USER TO AUTO BE ADDED TO COMPANY AND CITY MESSAGE BOARD
+        //if the message board for city doesn't exist make one
+        //auto post message
         return res.status(200).json({
             status:200,
             message:'success',
@@ -54,7 +59,7 @@ const login = async (req,res)=>{
                 message:'Password or Username is incorrect',
             })
         }
-        const isMatch = bcrypt.compare(foundUser.password,req.body.password)
+        const isMatch = await bcrypt.compare(foundUser.password,req.body.password)
         if(isMatch){
             const token = jwt.sign({_id:foundUser._id},process.env.SECRET,{
                 expiresIn:'1d',

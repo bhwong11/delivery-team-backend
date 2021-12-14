@@ -5,6 +5,10 @@ const MessageBoardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "MessageBoard",
     }],
+    name:{
+        type:String,
+        required:true,
+    },
     category:{
         type:String,
         required:true,
